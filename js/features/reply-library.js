@@ -1,35 +1,3 @@
-// ============================================
-// LIBRARY_CONFIG - 回复库配置（新增语音/视频库）
-// ============================================
-const LIBRARY_CONFIG = {
-    reply: {
-        title: "回复库管理",
-        tabs: [
-            { id: 'custom', name: '主字卡', mode: 'list' },
-            { id: 'emojis', name: 'Emoji', mode: 'grid' },
-            { id: 'stickers', name: '表情库', mode: 'grid' }
-        ]
-    },
-    atmosphere: {
-        title: "氛围感配置",
-        tabs: [
-            { id: 'pokes', name: '拍一拍', mode: 'list' },
-            { id: 'statuses', name: '对方状态', mode: 'list' },
-            { id: 'mottos', name: '顶部格言', mode: 'list' },
-            { id: 'intros', name: '开场动画', mode: 'list' }
-        ]
-    },
-    // ===== 新增：语音库 =====
-    voice: {
-        title: "语音库",
-        tabs: [{ id: 'voice', name: '我的语音', mode: 'list' }]
-    },
-    // ===== 新增：视频库 =====
-    video: {
-        title: "视频库",
-        tabs: [{ id: 'video', name: '我的视频', mode: 'list' }]
-    }
-};
 if (typeof customReplyGroups === 'undefined') window.customReplyGroups = [];
 if (typeof replyGroupsEnabled === 'undefined') window.replyGroupsEnabled = false;
 if (typeof customPokeGroups === 'undefined') window.customPokeGroups = [];
