@@ -186,19 +186,7 @@ autoSendInterval: 5,
         partnerPokeCustomSoundUrl: '',
         soundVolume: 0.15,
         bottomCollapseMode: false,
-        emojiMixEnabled: true,
-        moments: {
-            autoPostEnabled: true,
-            autoPostIntervalMin: 600,
-            autoPostIntervalMax: 1800,
-            cardCountMin: 1,
-            cardCountMax: 3,
-            imageChance: 30,
-            videoChance: 10,
-            voiceChance: 15,
-            commentReplyDelayMin: 5,
-            commentReplyDelayMax: 15,
-                },
+        emojiMixEnabled: true
             };
         }
 
@@ -318,7 +306,6 @@ const loadData = async () => {
             localforage.getItem(getStorageKey('customReplyGroups')),
             localforage.getItem(getStorageKey('customPokeGroups')),
             localforage.getItem(getStorageKey('customStatusGroups'))
-            localforage.getItem(getStorageKey('momentsData')),
         ]);
         const getVal = (index) => results[index].status === 'fulfilled' ? results[index].value : null;
 
@@ -343,7 +330,6 @@ const loadData = async () => {
         const savedReplyGroups = getVal(18);
         const savedPokeGroups = getVal(19);
         const savedStatusGroups = getVal(20);
-        const savedMoments = getVal(21); 
 
         if (savedPartnerPersonas) partnerPersonas = savedPartnerPersonas;
 
@@ -432,7 +418,6 @@ const loadData = async () => {
                 localforage.setItem(getStorageKey('chatBackground'), lsBg);
             }
         }
-           if (savedMoments) momentsData = savedMoments;
 
         try { await initMoodData(); } catch(e) { console.warn("心情数据加载失败", e); }
         try { await loadEnvelopeData(); } catch(e) { console.warn("信封数据加载失败", e); }
@@ -445,13 +430,10 @@ const loadData = async () => {
             checkEnvelopeStatus(); 
             updateUI();
             if (settings.customBubbleCss) {
-                 try { applyCustomBubbleCss(settings.customBubbleCss); } catch(e) {}
+                try { applyCustomBubbleCss(settings.customBubbleCss); } catch(e) {}
             }
         }, 100);
 
-if (typeof MomentsApp !== 'undefined' && MomentsApp.startAutoPost) {
-    MomentsApp.startAutoPost();
-}
     } catch (e) {
         console.error("LoadData 内部致命错误:", e);
         settings = getDefaultSettings();
@@ -598,7 +580,6 @@ const saveData = async () => {
         { key: 'customThemes',           val: () => localforage.setItem(`${APP_PREFIX}customThemes`, customThemes) },
         { key: 'themeSchemes',           val: () => localforage.setItem(`${APP_PREFIX}themeSchemes`, themeSchemes) },
         { key: 'chatMessages',           val: () => localforage.setItem(getStorageKey('chatMessages'), messages) },
-        { key: 'momentsData', val: () => localforage.setItem(getStorageKey('momentsData'), momentsData) },
     ];
 
     const partnerAvatarSrc = (() => {
@@ -1724,65 +1705,7 @@ if (partnerPersonas && partnerPersonas.length > 0 && Math.random() < 0.3) {
             const recentUserMsgs = (settings.replyEnabled && !window._companionSilentTrigger)
                 ? messages.filter(m => m.sender === 'user' && m.text).slice(-10)
                 : [];
-    // ===== 新增：随机语音/视频（在发送文本回复之前） =====
-    // 10% 概率发送语音
-    if (typeof getRandomVoice === 'function' && Math.random() < 0.1) {
-        const voice = getRandomVoice();
-        if (voice) {
-            addMessage({
-                id: Date.now(),
-                sender: settings.partnerName || '对方',
-                text: '',
-                timestamp: new Date(),
-                voice: { url: voice.url, duration: 3 },
-                status: 'received',
-                type: 'normal'
-            });
-            playSound('message');
-            // 隐藏 typing 指示器
-            (function() {
-                try {
-                    if (window._typingIndicatorAutoHideTimer) {
-                        clearTimeout(window._typingIndicatorAutoHideTimer);
-                        window._typingIndicatorAutoHideTimer = null;
-                    }
-                } catch (e) {}
-                var _tiW = document.getElementById('typing-indicator-wrapper');
-                if (_tiW) _tiW.style.display = 'none';
-            })();
-            return;
-        }
-    }
-
-    // 5% 概率发送视频
-    if (typeof getRandomVideo === 'function' && Math.random() < 0.05) {
-        const video = getRandomVideo();
-        if (video) {
-            addMessage({
-                id: Date.now(),
-                sender: settings.partnerName || '对方',
-                text: '',
-                timestamp: new Date(),
-                video: video.url,
-                status: 'received',
-                type: 'normal'
-            });
-            playSound('message');
-            // 隐藏 typing 指示器
-            (function() {
-                try {
-                    if (window._typingIndicatorAutoHideTimer) {
-                        clearTimeout(window._typingIndicatorAutoHideTimer);
-                        window._typingIndicatorAutoHideTimer = null;
-                    }
-                } catch (e) {}
-                var _tiW = document.getElementById('typing-indicator-wrapper');
-                if (_tiW) _tiW.style.display = 'none';
-            })();
-            return;
-        }
-    }
-               for (let i = 0; i < replyCount; i++) {
+            for (let i = 0; i < replyCount; i++) {
                 const delayRange = settings.replyDelayMax - settings.replyDelayMin;
                 delay += settings.replyDelayMin + Math.random() * delayRange;
                 setTimeout(() => {

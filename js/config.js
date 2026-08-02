@@ -342,16 +342,3 @@
         };
 
 window.APP_PREFIX = APP_PREFIX;
-// 朋友圈配置
-const MOMENTS_CONFIG = {
-    autoPostIntervalMin: 600,
-    autoPostIntervalMax: 1800,
-    cardCountMin: 1,
-    cardCountMax: 3,
-    imageChance: 30,
-    videoChance: 10,
-    voiceChance: 15,
-    commentReplyDelayMin: 5,
-    commentReplyDelayMax: 15,
-};
-window.MOMENTS_CONFIG = MOMENTS_CONFIG;
